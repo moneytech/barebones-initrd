@@ -22,7 +22,7 @@ tree:	$(tree_files) menu.lst
 	cp menu.lst tree/boot/grub
 
 initrd.img: initrd
-	(cd initrd; find . -type f | cpio --quiet -R 0:0 -o -H newc) | gzip -c > $@
+	(cd initrd; find . | cpio --quiet -R 0:0 -o -H newc) | gzip -c > $@
 
 initrd: helloworld
 	rm -rf initrd
