@@ -10,7 +10,7 @@ tree_files = vmlinuz-3.2.0-4-amd64 initrd.img
 all:	image.iso
 
 clean:
-	rm -f image.iso build *~ helloworld initrd.img
+	rm -f image.iso build *~ initrd.img
 	rm -rf tree initrd
 
 tree:	$(tree_files) menu.lst
@@ -24,14 +24,14 @@ tree:	$(tree_files) menu.lst
 initrd.img: initrd
 	(cd initrd; find . | cpio --quiet -R 0:0 -o -H newc) | gzip -c > $@
 
-initrd: helloworld
+initrd: busybox fstab init
 	rm -rf initrd
-	mkdir -p initrd
-	cp helloworld initrd/init
-
-helloworld: helloworld.c
-	gcc -static -o $@ $<
-	strip $@
+	for d in bin etc sbin tmp proc sys dev/pts run; do mkdir -p initrd/$$d; done
+	cp -a busybox initrd/bin/busybox
+	ln -sf busybox initrd/bin/sh
+	cp -a fstab initrd/etc
+	cp -a init initrd/init
+	touch initrd/etc/inittab
 
 GENISOIMAGE=genisoimage
 image.iso: tree

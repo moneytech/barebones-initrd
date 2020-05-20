@@ -1,0 +1,4 @@
+#!/bin/sh
+/bin/busybox --install
+mount -a
+/bin/sh
